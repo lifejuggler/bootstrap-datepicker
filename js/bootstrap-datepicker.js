@@ -440,6 +440,10 @@
 		_trigger: function(event, altdate){
 			var date = altdate || this.dates.get(-1),
 				local_date = this._utc_to_local(date);
+			if (event === "hide") {
+				this.resetMonthList();
+				this.resetYearList();
+			}
 			this.element.trigger({
 				type: event,
 				date: local_date,
@@ -521,14 +525,14 @@
 			var monthListEl = this.picker.find('.datepicker-switch-month ul');
 
 			if (monthListEl.hasClass('active')) {
-				monthListEl.removeClass('active').slideUp(0);
+				monthListEl.removeClass('active').hide().stop(true, true);
 			}
 		},
 		resetYearList: function(){
 			var yearListEl = this.picker.find('.datepicker-switch-year ul');
 
 			if (yearListEl.hasClass('active')) {
-				yearListEl.removeClass('active').slideUp(0);
+				yearListEl.removeClass('active').hide().stop(true, true);
 			}
 		},
 		remove: function(){
@@ -897,6 +901,7 @@
 				startYear++;
 			}
 			html += '</ul>';
+			yearDiv.remove(".year-list");
 			$(html).appendTo(yearDiv);
 
 		},
@@ -1537,7 +1542,7 @@
 				if (e.keyCode === 40 || e.keyCode === 27) { // allow down to re-show picker
 					this.show();
 					e.stopPropagation();
-        }
+        		}
 				return;
 			}
 			var dateChanged = false,
