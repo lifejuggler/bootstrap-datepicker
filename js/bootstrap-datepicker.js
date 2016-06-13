@@ -878,21 +878,20 @@
 			this.picker.find('.datepicker-months td').html(html);
 		},
 		fillMonthRange: function(){
-			var monthDiv = this.picker.find('.datepicker-switch-month'),
-			html = '<ul class="month-list" style="display:none">',
+			var monthList = this.picker.find('.datepicker-switch-month ul'),
+			html = '',
 			i = 0;
 			while (i < 12){
 				html += '<li class="month">'
 				+dates[this.o.language].months[i++]+'</li>';
 			}
-			html += '</ul>'
-			$(html).appendTo(monthDiv);
+			monthList.html(html);
 		},
 		fillYearRange: function(){
-			var yearDiv = this.picker.find('.datepicker-switch-year'),
+			var yearList = this.picker.find('.datepicker-switch-year ul'),
 			startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : new Date().getFullYear(),
 			endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : new Date().getFullYear(),
-			html = '<ul class="year-list" style="display:none">',
+			html = '',
 			setRange = false,
 			dateDiff = this.o.endDate - this.o.startDate;
 
@@ -900,9 +899,7 @@
 				html += '<li class="year">'+startYear+'</li>';
 				startYear++;
 			}
-			html += '</ul>';
-			yearDiv.remove(".year-list");
-			$(html).appendTo(yearDiv);
+			yearList.html(html);
 
 		},
 		setRange: function(range){
@@ -2098,8 +2095,10 @@
 							'<tr class="control-header">'+
 								'<th class="prev">&#171;</th>'+
 								'<th colspan="5" class="datepicker-switch"></th>'+
-                                '<th colspan="3" class="datepicker-switch-month"><span class="month"></span></th>'+
-                                '<th colspan="2" class="datepicker-switch-year"><span class="year"></span></th>'+
+                                '<th colspan="3" class="datepicker-switch-month"><span class="month"></span>'+
+                                '<ul class="month-list" style="display:none"></ul></th>'+
+                                '<th colspan="2" class="datepicker-switch-year"><span class="year"></span>'+
+                                '<ul class="year-list" style="display:none"></ul></th>'+
 								'<th class="next">&#187;</th>'+
 							'</tr>'+
 						'</thead>',
