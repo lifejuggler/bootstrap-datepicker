@@ -148,7 +148,8 @@
 
 		this.fillDow();
 		this.fillMonths();
-
+		this.fillMonthRange();
+		this.fillYearRange();
 		this._allow_update = true;
 
 		this.update();
@@ -315,12 +316,13 @@
 				if (evs[i].length === 2){
 					ch = undefined;
 					ev = evs[i][1];
+					el.on(ev, ch);
 				}
 				else if (evs[i].length === 3){
 					ch = evs[i][1];
 					ev = evs[i][2];
+					el.on(ev, ch);
 				}
-				el.on(ev, ch);
 			}
 		},
 		_unapplyEvents: function(evs){
@@ -346,7 +348,6 @@
                 keydown: $.proxy(this.keydown, this),
                 paste: $.proxy(this.paste, this)
             };
-
             if (this.o.showOnFocus === true) {
                 events.focus = $.proxy(this.show, this);
             }
@@ -439,7 +440,6 @@
 		_trigger: function(event, altdate){
 			var date = altdate || this.dates.get(-1),
 				local_date = this._utc_to_local(date);
-
 			this.element.trigger({
 				type: event,
 				date: local_date,
@@ -497,7 +497,40 @@
 			this._trigger('hide');
 			return this;
 		},
+		toggleMonthList: function(){
+			var monthListEl = this.picker.find('.datepicker-switch-month ul');
 
+			this.resetYearList();
+			if (monthListEl.hasClass('active')) {
+				monthListEl.removeClass('active').slideUp(200);
+			} else {
+				monthListEl.addClass('active').slideDown(200);
+			}
+		},
+		toggleYearList: function(){
+			var yearListEl = this.picker.find('.datepicker-switch-year ul');
+
+			this.resetMonthList();
+			if (yearListEl.hasClass('active')) {
+				yearListEl.removeClass('active').slideUp(200);
+			} else {
+				yearListEl.addClass('active').slideDown(200);
+			}
+		},
+		resetMonthList: function(){
+			var monthListEl = this.picker.find('.datepicker-switch-month ul');
+
+			if (monthListEl.hasClass('active')) {
+				monthListEl.removeClass('active').slideUp(0);
+			}
+		},
+		resetYearList: function(){
+			var yearListEl = this.picker.find('.datepicker-switch-year ul');
+
+			if (yearListEl.hasClass('active')) {
+				yearListEl.removeClass('active').slideUp(0);
+			}
+		},
 		remove: function(){
 			this.hide();
 			this._detachEvents();
@@ -840,7 +873,33 @@
 			}
 			this.picker.find('.datepicker-months td').html(html);
 		},
+		fillMonthRange: function(){
+			var monthDiv = this.picker.find('.datepicker-switch-month'),
+			html = '<ul class="month-list" style="display:none">',
+			i = 0;
+			while (i < 12){
+				html += '<li class="month">'
+				+dates[this.o.language].months[i++]+'</li>';
+			}
+			html += '</ul>'
+			$(html).appendTo(monthDiv);
+		},
+		fillYearRange: function(){
+			var yearDiv = this.picker.find('.datepicker-switch-year'),
+			startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : new Date().getFullYear(),
+			endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : new Date().getFullYear(),
+			html = '<ul class="year-list" style="display:none">',
+			setRange = false,
+			dateDiff = this.o.endDate - this.o.startDate;
 
+			while(startYear <= endYear) {
+				html += '<li class="year">'+startYear+'</li>';
+				startYear++;
+			}
+			html += '</ul>';
+			$(html).appendTo(yearDiv);
+
+		},
 		setRange: function(range){
 			if (!range || !range.length)
 				delete this.range;
@@ -850,7 +909,15 @@
 				});
 			this.fill();
 		},
-
+		setMonthSelect: function(monthIdx){
+			var selectedMonth = this.picker.find('.datepicker-switch-month span'),
+			newMonth = dates[this.o.language].months[monthIdx];
+			selectedMonth.text(newMonth);
+		},
+		setYearSelect: function(year){
+			var selectedYear = this.picker.find('.datepicker-switch-year span');
+			selectedYear.text(year);
+		},
 		getClassNames: function(date){
 			var cls = [],
 				year = this.viewDate.getUTCFullYear(),
@@ -911,8 +978,6 @@
             month     = new Date(this.viewDate).getUTCMonth();
 
 			view.find('.datepicker-switch').text(year + '-' + (year + step * 9));
-            view.find('.datepicker-switch-month').text(dates[this.o.language].months[month]);
-            view.find('.datepicker-switch-year').text(currentYear);
 
 			thisYear = year - step;
 			for (i = -1; i < 11; i += 1) {
@@ -974,16 +1039,14 @@
 				return;
 			this.picker.find('.datepicker-days .datepicker-switch')
 						.text(DPGlobal.formatDate(d, titleFormat, this.o.language));
-            this.picker.find('.datepicker-days .datepicker-switch-month')
-                        .text(dates[this.o.language].months[month]);
-            this.picker.find('.datepicker-days .datepicker-switch-year')
-                        .text(year);
             this.picker.find('thead th.datepicker-switch')
-                        .toggle(this.o.separateMonthYear !== true);
-            this.picker.find('thead th.datepicker-switch-month')
-                        .toggle(this.o.separateMonthYear !== false);
-            this.picker.find('thead th.datepicker-switch-year')
-                        .toggle(this.o.separateMonthYear !== false);
+                        .toggle(this.o.monthYearDropdown !== true);
+            this.picker.find('thead th.datepicker-switch-month span')
+            			.text(dates[this.o.language].months[month])
+                        .toggle(this.o.monthYearDropdown !== false);
+            this.picker.find('thead th.datepicker-switch-year span')
+            			.text(year)
+                        .toggle(this.o.monthYearDropdown !== false);
             this.picker.find('.datepicker-months table.table-condensed')
                         .css('width', '100%');
             this.picker.find('.datepicker-years table.table-condensed')
@@ -999,6 +1062,8 @@
 						.toggle(this.o.title !== '');
 			this.updateNavArrows();
 			this.fillMonths();
+			this.fillMonthRange();
+			this.fillYearRange();
 			var prevMonth = UTCDate(year, month-1, 28),
 				day = DPGlobal.getDaysInMonth(prevMonth.getUTCFullYear(), prevMonth.getUTCMonth());
 			prevMonth.setUTCDate(day);
@@ -1064,18 +1129,6 @@
 							.text(this.o.maxViewMode < 2 ? 'Months' : year)
 							.end()
 						.find('span').removeClass('active');
-
-            var separateMonthButton = this.picker.find('.datepicker-months')
-                                        .find('th.datepicker-switch-month')
-                                            .text(dates[this.o.language].months[month])
-                                            .end()
-                                        .find('span').removeClass('active');
-
-            var separateYearButton = this.picker.find('.datepicker-months')
-                                        .find('th.datepicker-switch-year')
-                                            .text(year)
-                                            .end()
-                                        .find('span').removeClass('active');
 
 			$.each(this.dates, function(i, d){
 				if (d.getUTCFullYear() === year)
@@ -1189,17 +1242,37 @@
 			var target = $(e.target).closest('span, td, th'),
 				year, month, day;
 			if (target.length === 1){
+				if (target['context'].nodeName.toLowerCase() === 'li') {
+					switch (target['context'].className) {
+						case 'month':
+							var newMonth = dates['en'].months.indexOf(target['context'].innerText);
+							this.setMonthSelect(newMonth);
+							this.viewDate.setUTCMonth(newMonth);
+							this._trigger('changeMonth', this.viewDate);
+							this.fill();
+							break;
+						case 'year':
+							var newYear = target['context'].innerText;
+							this.viewDate.setUTCFullYear(newYear);
+							this.setYearSelect(newYear);
+							this._trigger('changeYear', this.viewDate);
+							this.fill();
+							break;
+					}
+				}
 				switch (target[0].nodeName.toLowerCase()){
 					case 'th':
 						switch (target[0].className){
 							case 'datepicker-switch':
+								this.resetMonthList();
+								this.resetYearList();
 								this.showMode(1);
 								break;
                             case 'datepicker-switch-month':
-                                this.showMode(1);
-                                break;
+								this.toggleMonthList();
+								break;
                             case 'datepicker-switch-year':
-                                this.showMode(2);
+                                this.toggleYearList();
                                 break;
 							case 'prev':
 							case 'next':
@@ -1218,20 +1291,36 @@
 											this._trigger('changeYear', this.viewDate);
 										break;
 								}
+								this.resetMonthList();
+								this.resetYearList();
 								this.fill();
 								break;
 							case 'today':
+								this.resetMonthList();
+								this.resetYearList();
 								this.showMode(-2);
 								var which = this.o.todayBtn === 'linked' ? null : 'view';
 								this._setDate(UTCToday(), which);
 								break;
 							case 'clear':
+								this.resetMonthList();
+								this.resetYearList();
 								this.clearDates();
 								break;
 						}
 						break;
 					case 'span':
-						if (!target.hasClass('disabled')){
+						if (target['context'].className.toLowerCase() === 'month' ||
+							target['context'].className.toLowerCase() === 'year') {
+							switch (target['context'].className) {
+								case 'month':
+									this.toggleMonthList();
+									break;
+								case 'year':
+									this.toggleYearList();
+									break;
+							}
+						} else if (!target.hasClass('disabled')){
 							this.viewDate.setUTCDate(1);
 							if (target.hasClass('month')){
 								day = 1;
@@ -1239,18 +1328,7 @@
 								year = this.viewDate.getUTCFullYear();
 								this.viewDate.setUTCMonth(month);
 								this._trigger('changeMonth', this.viewDate);
-                                if (this.o.separateMonthYear !== false) {
-                                    this.showMode(0);
-                                } else {
-                                    if (this.o.minViewMode === 1){
-    									this._setDate(UTCDate(year, month, day));
-    									this.showMode();
-    								} else {
-    									this.showMode(-1);
-    								}
-                                }
-							}
-							else {
+							} else {
 								day = 1;
 								month = 0;
 								year = parseInt(target.text(), 10)||0;
@@ -1268,12 +1346,9 @@
 								if (shouldSetDate){
 									this._setDate(UTCDate(year, month, day));
 								}
-                                if (this.o.separateMonthYear !== false) {
-                                    this.showMode(0);
-                                } else {
-								    this.showMode(-1);
-                                }
 							}
+							this.resetMonthList();
+							this.resetYearList();
 							this.fill();
 						}
 						break;
@@ -1302,6 +1377,8 @@
 							}
 							this._setDate(UTCDate(year, month, day));
 						}
+						this.resetMonthList();
+						this.resetYearList();
 						break;
 				}
 			}
@@ -1399,8 +1476,7 @@
 				// Dec -> Jan (12) or Jan -> Dec (-1) -- limit expected date to 0-11
 				if (new_month < 0 || new_month > 11)
 					new_month = (new_month + 12) % 12;
-			}
-			else {
+			} else {
 				// For magnitudes >1, move one month at a time...
 				for (var i=0; i < mag; i++)
 					// ...which might decrease the day (eg, Jan 31 to Feb 28, etc)...
@@ -1526,8 +1602,11 @@
 					if (this.picker.is(':visible')){
 						e.preventDefault();
 						e.stopPropagation();
-						if (this.o.autoclose)
-							this.hide();
+						this.hide();
+					}
+					if (this.o.monthYearDropdown && this.element.hasClass("startDate")) {
+						$('.form-control.startDate').blur();
+						$('.form-control.endDate').focus();
 					}
 					break;
 				case 9: // tab
@@ -1758,7 +1837,7 @@
 		multidateSeparator: ',',
 		orientation: "auto",
 		rtl: false,
-        separateMonthYear: false,
+        monthYearDropdown: true,
 		startDate: -Infinity,
 		startView: 0,
 		todayBtn: false,
@@ -2008,14 +2087,14 @@
 			return date.join('');
 		},
 		headTemplate: '<thead>'+
-			              '<tr>'+
-			                '<th colspan="7" class="datepicker-title"></th>'+
-			              '</tr>'+
-							'<tr>'+
+			                '<tr>'+
+			                    '<th colspan="7" class="datepicker-title"></th>'+
+			                '</tr>'+
+							'<tr class="control-header">'+
 								'<th class="prev">&#171;</th>'+
 								'<th colspan="5" class="datepicker-switch"></th>'+
-                                '<th colspan="3" class="datepicker-switch-month"></th>'+
-                                '<th colspan="2" class="datepicker-switch-year"></th>'+
+                                '<th colspan="3" class="datepicker-switch-month"><span class="month"></span></th>'+
+                                '<th colspan="2" class="datepicker-switch-year"><span class="year"></span></th>'+
 								'<th class="next">&#187;</th>'+
 							'</tr>'+
 						'</thead>',

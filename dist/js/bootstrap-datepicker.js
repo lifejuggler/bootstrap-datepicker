@@ -824,16 +824,26 @@
 		},
 
 		fillMonths: function(){
-      var localDate = this._utc_to_local(this.viewDate);
+		    var localDate = this._utc_to_local(this.viewDate);
 			var html = '',
 			i = 0;
 			while (i < 12){
-        var focused = localDate && localDate.getMonth() === i ? ' focused' : '';
+        		var focused = localDate && localDate.getMonth() === i ? ' focused' : '';
 				html += '<span class="month' + focused + '">' + dates[this.o.language].monthsShort[i++]+'</span>';
 			}
 			this.picker.find('.datepicker-months td').html(html);
 		},
-
+		fillMonthOptions: function(){
+			var localDate = this._utc_to_local(this.viewDate);
+			var html = '<select>',
+			i = 0;
+			while (i < 12){
+				var selected = localDate && localDate.getMonth() === i ? 'selected' : '';
+				html += '<option' + selected + '>' + dates[this.o.language].months[i++] + '</span>';
+			}
+			html += '</select>'
+			this.picker.find('.datepicker-switch-month').html(html);
+		}
 		setRange: function(range){
 			if (!range || !range.length)
 				delete this.range;
@@ -969,7 +979,11 @@
 			if (isNaN(year) || isNaN(month))
 				return;
 			this.picker.find('.datepicker-days .datepicker-switch')
-						.text(DPGlobal.formatDate(d, titleFormat, this.o.language));
+						.text(DPGlobal.formatDate(d, titleFormat, this.o.language))
+						.toggle(this.o.monthYearDropdown !== true)
+			this.picker.find('.datepicker-days .datepicker-switch-month')
+						.html(this.fillMonthOptions())
+						.toggle(this.o.monthYearDropdown !== false)
 			this.picker.find('tfoot .today')
 						.text(todaytxt)
 						.toggle(this.o.todayBtn !== false);
@@ -1031,7 +1045,7 @@
 				}
 
 				clsName = $.unique(clsName);
-				
+
 				html.push('<td class="'+clsName.join(' ')+'"' + (tooltip ? ' title="'+tooltip+'"' : '') + (this.o.dateCells ? ' data-date="'+(prevMonth.getTime().toString())+'"' : '') + '>'+prevMonth.getUTCDate() + '</td>');
 				tooltip = null;
 				if (prevMonth.getUTCDay() === this.o.weekEnd){
@@ -1066,8 +1080,8 @@
 			if (this.o.beforeShowMonth !== $.noop){
 				var that = this;
 				$.each(months, function(i, month){
-          var moDate = new Date(year, i, 1);
-          var before = that.o.beforeShowMonth(moDate);
+          			var moDate = new Date(year, i, 1);
+          			var before = that.o.beforeShowMonth(moDate);
 					if (before === undefined)
 						before = {};
 					else if (typeof(before) === 'boolean')
@@ -1748,6 +1762,7 @@
 		weekStart: 0,
 		disableTouchKeyboard: false,
 		enableOnReadonly: true,
+		monthYearDropdown: false,
 		showOnFocus: true,
 		zIndexOffset: 10,
 		container: 'body',
@@ -2003,6 +2018,8 @@
 							'<tr>'+
 								'<th class="prev">&laquo;</th>'+
 								'<th colspan="5" class="datepicker-switch"></th>'+
+								'<th colspan="3" class="datepicker-switch-month"></th>'
+								'<th colspan="2" class="datepicker-switch-year"></th>'
 								'<th class="next">&raquo;</th>'+
 							'</tr>'+
 						'</thead>',
