@@ -726,6 +726,7 @@ th.datepicker-switch-year {
   box-shadow: 0 1px 1px rgba(50,50,50,0.3);
   cursor: pointer;
   outline: none;
+  margin-left: 5px;
 }
 th.datepicker-switch-month ul{
   padding-left: 0px;
@@ -737,6 +738,16 @@ th.datepicker-switch-month ul{
   font-weight: normal;
   list-style: none;
   top: 15%;
+}
+.month-list .month.selected {
+  background: #9BCCDB;
+  color: white;
+  border-radius: inherit;
+}
+.year-list .year.selected {
+  background: #9BCCDB;
+  color: white;
+  border-radius: inherit;
 }
 th.datepicker-switch-month ul:after {
     content: "";
@@ -750,6 +761,17 @@ th.datepicker-switch-month ul:after {
     border-color: #fff transparent;
 }
 th.datepicker-switch-month ul:before {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    bottom: 100%;
+    right: 13px;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: rgba(0,0,0,0.1) transparent;
+}
+.year-list:before {
     content: "";
     width: 0;
     height: 0;
@@ -781,17 +803,10 @@ th.datepicker-switch-year ul{
   list-style: none;
   top: 15%;
 }
-.datepicker.datepicker-switch-month ul {
-  list-style-type: none;
-  z-index: 200;
-  float:left;
-  background: white;
-}
-.datepicker.datepicker-switch-year ul {
-  list-style-type: none;
-  z-index: 200;
-  float:left;
-  background: white;
+.year-list {
+  width: 65px;
+  max-height: 300px;
+  overflow-y: scroll;
 }
 .datepicker .datepicker-switch-month ul li {
   display: block;

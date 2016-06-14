@@ -870,24 +870,28 @@
 		},
 
 		fillMonths: function(){
+			var localDate = this._utc_to_local(this.viewDate);
 			var html = '',
 			i = 0;
 			while (i < 12){
-				html += '<span class="month">'+dates[this.o.language].monthsShort[i++]+'</span>';
+				var focused = localDate && localDate.getMonth() === i ? ' focused' : '';
+				html += '<span class="month'+ focused +'">'+dates[this.o.language].monthsShort[i++]+'</span>';
 			}
 			this.picker.find('.datepicker-months td').html(html);
 		},
 		fillMonthRange: function(){
+			var localDate = this._utc_to_local(this.viewDate);
 			var monthList = this.picker.find('.datepicker-switch-month ul'),
 			html = '',
 			i = 0;
 			while (i < 12){
-				html += '<li class="month">'
-				+dates[this.o.language].months[i++]+'</li>';
+				var selected = localDate && localDate.getMonth() === i ? ' selected' : '';
+				html += '<li class="month'+ selected +'">'+ dates[this.o.language].months[i++] +'</li>';
 			}
 			monthList.html(html);
 		},
 		fillYearRange: function(){
+			var localDate = this._utc_to_local(this.viewDate);
 			var yearList = this.picker.find('.datepicker-switch-year ul'),
 			startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : new Date().getFullYear(),
 			endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : new Date().getFullYear(),
@@ -896,7 +900,8 @@
 			dateDiff = this.o.endDate - this.o.startDate;
 
 			while(startYear <= endYear) {
-				html += '<li class="year">'+startYear+'</li>';
+				var selected = localDate && localDate.getFullYear() === startYear ? ' selected' : '';
+				html += '<li class="year'+ selected +'">'+startYear+'</li>';
 				startYear++;
 			}
 			yearList.html(html);
