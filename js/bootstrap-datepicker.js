@@ -893,7 +893,7 @@
 		fillYearRange: function(){
 			var localDate = this._utc_to_local(this.viewDate);
 			var yearList = this.picker.find('.datepicker-switch-year ul'),
-			startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : new Date().getFullYear(),
+			startYear = this.o.startDate !== -Infinity ? this.o.startDate.getUTCFullYear() : new Date(0).getFullYear(),
 			endYear = this.o.endDate !== Infinity ? this.o.endDate.getUTCFullYear() : new Date().getFullYear(),
 			html = '',
 			setRange = false,
