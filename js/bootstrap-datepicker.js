@@ -899,10 +899,10 @@
 			setRange = false,
 			dateDiff = this.o.endDate - this.o.startDate;
 
-			while(startYear <= endYear) {
-				var selected = localDate && localDate.getFullYear() === startYear ? ' selected' : '';
-				html += '<li class="year'+ selected +'">'+startYear+'</li>';
-				startYear++;
+			while(endYear >= startYear) {
+				var selected = localDate && localDate.getFullYear() ===  endYear ? ' selected' : '';
+				html += '<li class="year' + selected + '">' + endYear + '</li>';
+				endYear--;
 			}
 			yearList.html(html);
 
