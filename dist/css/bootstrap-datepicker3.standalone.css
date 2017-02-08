@@ -1,5 +1,5 @@
 /*!
- * Datepicker for Bootstrap v1.7.0-dev (https://github.com/uxsolutions/bootstrap-datepicker)
+ * Datepicker for Bootstrap v1.7.0-RC1 (https://github.com/uxsolutions/bootstrap-datepicker)
  *
  * Licensed under the Apache License v2.0 (http://www.apache.org/licenses/LICENSE-2.0)
  */
@@ -11,13 +11,13 @@
 .datepicker-inline {
   width: 220px;
 }
-.datepicker.datepicker-rtl {
+.datepicker-rtl {
   direction: rtl;
 }
-.datepicker.datepicker-rtl.dropdown-menu {
+.datepicker-rtl.dropdown-menu {
   left: auto;
 }
-.datepicker.datepicker-rtl table tr td span {
+.datepicker-rtl table tr td span {
   float: right;
 }
 .datepicker-dropdown {
@@ -107,7 +107,6 @@
   background: none;
   color: #777777;
   cursor: not-allowed;
-  text-decoration: line-through;
 }
 .datepicker table tr td.highlighted {
   color: #000;
@@ -517,9 +516,8 @@ fieldset[disabled] .datepicker table tr td.active.highlighted.focus {
 .datepicker table tr td span.disabled,
 .datepicker table tr td span.disabled:hover {
   background: none;
-  text-decoration: line-through;
   color: #777777;
-  cursor: not-allowed;
+  cursor: default;
 }
 .datepicker table tr td span.active,
 .datepicker table tr td span.active:hover,
@@ -637,12 +635,16 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.focus {
   width: 145px;
 }
 .datepicker .datepicker-switch,
+.datepicker .datepicker-switch-month,
+.datepicker .datepicker-switch-year,
 .datepicker .prev,
 .datepicker .next,
 .datepicker tfoot tr th {
   cursor: pointer;
 }
 .datepicker .datepicker-switch:hover,
+.datepicker .datepicker-switch-month:hover,
+.datepicker .datepicker-switch-year:hover,
 .datepicker .prev:hover,
 .datepicker .next:hover,
 .datepicker tfoot tr th:hover {
@@ -683,6 +685,125 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.focus {
   margin-left: -5px;
   margin-right: -5px;
 }
+.datepicker .datepicker-switch-month ul li {
+  display: block;
+  padding: 3px 5px;
+  border-radius: 1px;
+}
+.datepicker .datepicker-switch-month ul li:hover {
+  color: #fff;
+  background: #2E2F5A;
+}
+.datepicker .datepicker-switch-year ul li:hover {
+  color: #fff;
+  background: #2E2F5A;
+}
+th.datepicker-switch-month {
+  top: 10px;
+  background: #fff;
+  color: #2E2F5A;
+  box-shadow: 0 1px 1px rgba(50, 50, 50, 0.3);
+  cursor: pointer;
+  outline: none;
+  margin-right: 5px;
+}
+th.datepicker-switch-month ul {
+  padding-left: 0px;
+  position: absolute;
+  background: white;
+  border-radius: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.17);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  font-weight: normal;
+  list-style: none;
+  top: 15%;
+}
+th.datepicker-switch-month ul:after {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  bottom: 100%;
+  right: 15px;
+  border-width: 0 6px 6px 6px;
+  border-style: solid;
+  border-color: #fff transparent;
+}
+th.datepicker-switch-month ul:before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  bottom: 100%;
+  right: 13px;
+  border-width: 0 8px 8px 8px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.1) transparent;
+}
+th.datepicker-switch-month:after {
+  content: "\f0d7";
+  padding-left: 5px;
+  font-family: FontAwesome;
+}
+th.datepicker-switch-year {
+  left: 80px;
+  top: 10px;
+  background: #fff;
+  color: #2E2F5A;
+  border-radius: 7px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 1px rgba(50, 50, 50, 0.3);
+  cursor: pointer;
+  outline: none;
+  margin-left: 5px;
+}
+.month-list .month.selected {
+  background: #9BCCDB;
+  color: white;
+  border-radius: inherit;
+}
+.year-list {
+  width: 65px;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+.year-list .year.selected {
+  background: #9BCCDB;
+  color: white;
+  border-radius: inherit;
+}
+.year-list:before {
+  content: "";
+  width: 0;
+  height: 0;
+  position: absolute;
+  bottom: 100%;
+  right: 13px;
+  border-width: 0 8px 8px 8px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.1) transparent;
+}
+th.datepicker-switch-year:after {
+  content: "\f0d7";
+  padding-left: 5px;
+  font-family: FontAwesome;
+}
+th.datepicker-switch-year ul {
+  padding-left: 0px;
+  position: absolute;
+  background: white;
+  border-radius: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.17);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  font-weight: normal;
+  list-style: none;
+  top: 15%;
+}
+th.datepicker-switch-year ul li {
+  display: block;
+  padding: 3px 5px;
+  border-radius: 1px;
+}
 .datepicker.dropdown-menu {
   position: absolute;
   top: 100%;
@@ -705,125 +826,6 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.focus {
   color: #333333;
   font-size: 13px;
   line-height: 1.42857143;
-}
-th.datepicker-switch-month {
-  top: 10px;
-  background: #fff;
-  color: #2E2F5A;
-  box-shadow: 0 1px 1px rgba(50,50,50,0.3);
-  cursor: pointer;
-  outline: none;
-  margin-right: 5px;
-}
-th.datepicker-switch-year {
-  left: 80px;
-  top: 10px;
-  background: #fff;
-  color: #2E2F5A;
-  border-radius: 7px;
-  border: 1px solid rgba(0,0,0,0.15);
-  box-shadow: 0 1px 1px rgba(50,50,50,0.3);
-  cursor: pointer;
-  outline: none;
-  margin-left: 5px;
-}
-th.datepicker-switch-month ul{
-  padding-left: 0px;
-  position: absolute;
-  background: white;
-  border-radius: inherit;
-  border: 1px solid rgba(0,0,0,0.17);
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  font-weight: normal;
-  list-style: none;
-  top: 15%;
-}
-.month-list .month.selected {
-  background: #9BCCDB;
-  color: white;
-  border-radius: inherit;
-}
-.year-list .year.selected {
-  background: #9BCCDB;
-  color: white;
-  border-radius: inherit;
-}
-th.datepicker-switch-month ul:after {
-    content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    bottom: 100%;
-    right: 15px;
-    border-width: 0 6px 6px 6px;
-    border-style: solid;
-    border-color: #fff transparent;
-}
-th.datepicker-switch-month ul:before {
-    content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    bottom: 100%;
-    right: 13px;
-    border-width: 0 8px 8px 8px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.1) transparent;
-}
-.year-list:before {
-    content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    bottom: 100%;
-    right: 13px;
-    border-width: 0 8px 8px 8px;
-    border-style: solid;
-    border-color: rgba(0,0,0,0.1) transparent;
-}
-th.datepicker-switch-month:after {
-    content: "\f0d7";
-    padding-left: 5px;
-    font-family: FontAwesome;
-}
-th.datepicker-switch-year:after {
-  content: "\f0d7";
-  padding-left: 5px;
-  font-family: FontAwesome;
-}
-th.datepicker-switch-year ul{
-  padding-left: 0px;
-  position: absolute;
-  background: white;
-  border-radius: inherit;
-  border: 1px solid rgba(0,0,0,0.17);
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  font-weight: normal;
-  list-style: none;
-  top: 15%;
-}
-.year-list {
-  width: 65px;
-  max-height: 300px;
-  overflow-y: scroll;
-}
-.datepicker .datepicker-switch-month ul li {
-  display: block;
-  padding: 3px 5px;
-  border-radius: 1px;
-}
-.datepicker .datepicker-switch-month ul li:hover{
-  color: #fff;
-  background:#2E2F5A;
-}
-.datepicker .datepicker-switch-year ul li {
-  display: block;
-  padding: 3px 5px;
-  border-radius: 1px;
-}
-.datepicker .datepicker-switch-year ul li:hover{
-  color: #fff;
-  background:#2E2F5A;
 }
 .datepicker.dropdown-menu th,
 .datepicker.datepicker-inline th,
